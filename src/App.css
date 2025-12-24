@@ -1,0 +1,963 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.app-header {
+  background: var(--duke-blue);
+  color: var(--white);
+  padding: var(--spacing-lg) var(--spacing-md);
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+
+.app-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-xs);
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Questionnaire */
+.questionnaire {
+  background: var(--white);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow-y: auto;
+  max-height: calc(100vh - 250px);
+}
+
+.questionnaire h2 {
+  color: var(--duke-blue);
+  margin-bottom: var(--spacing-sm);
+  font-size: 1.8rem;
+}
+
+.instructions {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.6;
+}
+
+.category-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.category-title {
+  color: var(--duke-royal-blue);
+  font-size: 1.3rem;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 2px solid var(--duke-royal-blue);
+}
+
+.questions-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Question Slider */
+.question-slider {
+  padding: var(--spacing-md);
+  background: var(--light-gray);
+  border-radius: var(--radius-md);
+  transition: all 0.3s ease;
+}
+
+.question-slider:hover {
+  background: var(--medium-gray);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.question-text {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.slider-container {
+  margin-bottom: var(--spacing-sm);
+}
+
+.slider {
+  width: 100%;
+  height: 8px;
+  border-radius: var(--radius-sm);
+  background: var(--medium-gray);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  margin-bottom: var(--spacing-md);
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--duke-blue);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  background: var(--duke-royal-blue);
+  transform: scale(1.1);
+}
+
+.slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--duke-blue);
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.slider::-moz-range-thumb:hover {
+  background: var(--duke-royal-blue);
+  transform: scale(1.1);
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
+}
+
+.slider-label {
+  font-size: 0.75rem;
+  color: var(--dark-gray);
+  text-align: center;
+  flex: 1;
+  transition: all 0.2s ease;
+}
+
+.slider-label.active {
+  color: var(--duke-blue);
+  font-weight: 600;
+  transform: scale(1.05);
+}
+
+.current-selection {
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--white);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.current-selection strong {
+  color: var(--duke-blue);
+}
+
+/* Results */
+.results-container {
+  position: sticky;
+  top: var(--spacing-lg);
+  height: fit-content;
+}
+
+.results {
+  background: var(--white);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  max-height: calc(100vh - 250px);
+  overflow-y: auto;
+}
+
+.score-display {
+  text-align: center;
+  padding: var(--spacing-lg);
+  background: linear-gradient(135deg, var(--duke-blue) 0%, var(--duke-royal-blue) 100%);
+  color: var(--white);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.score-display h2 {
+  font-size: 1.2rem;
+  margin-bottom: var(--spacing-sm);
+  opacity: 0.9;
+}
+
+.score-number {
+  font-size: 4rem;
+  font-weight: 700;
+  margin: var(--spacing-sm) 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.score-description {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.plan-recommendation {
+  margin-bottom: var(--spacing-lg);
+}
+
+.plan-recommendation h2 {
+  color: var(--duke-blue);
+  font-size: 1.8rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.plan-description {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.6;
+}
+
+.plan-details {
+  background: var(--light-gray);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.plan-details h3 {
+  color: var(--duke-royal-blue);
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.plan-details ul {
+  list-style: none;
+  padding: 0;
+}
+
+.plan-details li {
+  padding: var(--spacing-xs) 0;
+  padding-left: var(--spacing-md);
+  position: relative;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.plan-details li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--duke-blue);
+  font-weight: 700;
+}
+
+.recommendation {
+  background: var(--duke-blue);
+  color: var(--white);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.recommendation h3 {
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-xs);
+}
+
+.recommendation p {
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Plan-specific colors */
+.results.plan-a .score-display {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+}
+
+.results.plan-b .score-display {
+  background: linear-gradient(135deg, #8BC34A 0%, #689F38 100%);
+}
+
+.results.plan-c .score-display {
+  background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+}
+
+.results.plan-d .score-display {
+  background: linear-gradient(135deg, #FF5722 0%, #E64A19 100%);
+}
+
+.results.plan-e .score-display {
+  background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+}
+
+/* Breakdown */
+.breakdown {
+  border-top: 2px solid var(--medium-gray);
+  padding-top: var(--spacing-md);
+}
+
+.breakdown h3 {
+  color: var(--duke-blue);
+  font-size: 1.2rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.breakdown-grid {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--light-gray);
+  border-radius: var(--radius-sm);
+  align-items: center;
+}
+
+.breakdown-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.breakdown-value {
+  color: var(--duke-blue);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Footer */
+.app-footer {
+  background: var(--duke-blue);
+  color: var(--white);
+  padding: var(--spacing-md);
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.app-footer p {
+  margin: var(--spacing-xs) 0;
+}
+
+.bluebot-link {
+  margin-top: var(--spacing-sm);
+}
+
+.bluebot-link a {
+  color: #90CAF9;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.bluebot-link a:hover {
+  color: #BBDEFB;
+}
+
+/* Scrollbar Styling */
+.questionnaire::-webkit-scrollbar,
+.results::-webkit-scrollbar {
+  width: 8px;
+}
+
+.questionnaire::-webkit-scrollbar-track,
+.results::-webkit-scrollbar-track {
+  background: var(--light-gray);
+  border-radius: var(--radius-sm);
+}
+
+.questionnaire::-webkit-scrollbar-thumb,
+.results::-webkit-scrollbar-thumb {
+  background: var(--duke-blue);
+  border-radius: var(--radius-sm);
+}
+
+.questionnaire::-webkit-scrollbar-thumb:hover,
+.results::-webkit-scrollbar-thumb:hover {
+  background: var(--duke-royal-blue);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.results {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.category-section {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Drinks Section */
+.drinks-section {
+  padding: var(--spacing-md);
+  background: var(--light-gray);
+  border-radius: var(--radius-md);
+}
+
+.drinks-header {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  font-weight: 500;
+}
+
+/* Individual Drink Item */
+.drink-item-control {
+  background: var(--white);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--spacing-sm);
+  transition: all 0.3s ease;
+}
+
+.drink-item-control:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.drink-item-control:last-of-type {
+  margin-bottom: 0;
+}
+
+.drink-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xs);
+}
+
+.drink-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.drink-subtotal {
+  color: var(--duke-blue);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Frequency Slider Section for Drinks */
+.drink-frequency-section {
+  margin-bottom: var(--spacing-sm);
+}
+
+.drink-frequency-section .slider {
+  margin-bottom: var(--spacing-xs);
+}
+
+.drink-price-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.drink-price-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.drink-price-value {
+  font-weight: 600;
+  color: var(--duke-blue);
+}
+
+.drink-custom-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* Price Section */
+.drink-price-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--medium-gray);
+}
+
+.price-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.price-toggle-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--duke-blue);
+}
+
+.price-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.price-symbol {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.price-input {
+  width: 70px;
+  padding: var(--spacing-xs);
+  border: 1px solid var(--medium-gray);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+
+.price-input:focus {
+  outline: none;
+  border-color: var(--duke-blue);
+}
+
+/* Drinks Total */
+.drinks-total {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background: var(--duke-blue);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Results Breakdown Sub-items */
+.breakdown-subitem {
+  padding-left: var(--spacing-lg);
+  background: var(--white);
+  font-size: 0.85rem;
+}
+
+.breakdown-subitem .breakdown-label {
+  font-size: 0.85rem;
+}
+
+.breakdown-subitem .breakdown-value {
+  font-size: 0.9rem;
+}
+
+.breakdown-category {
+  background: var(--duke-royal-blue);
+}
+
+.breakdown-category .breakdown-label,
+.breakdown-category .breakdown-value {
+  color: var(--white);
+}
+
+/* Mobile Responsiveness for Drinks */
+@media (max-width: 480px) {
+  .drink-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .drink-quantity-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .quantity-display {
+    text-align: center;
+  }
+
+  .drink-price-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .price-input {
+    width: 100%;
+  }
+}
+
+/* Alcohol Section */
+.alcohol-section {
+  padding: var(--spacing-md);
+  background: var(--light-gray);
+  border-radius: var(--radius-md);
+}
+
+.alcohol-header {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  font-weight: 500;
+}
+
+.alcohol-item-control {
+  background: var(--white);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  transition: all 0.3s ease;
+}
+
+.alcohol-item-control:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.alcohol-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xs);
+}
+
+.alcohol-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.alcohol-subtotal {
+  color: var(--duke-blue);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.alcohol-frequency-section {
+  margin-bottom: var(--spacing-sm);
+}
+
+.alcohol-frequency-section .slider {
+  margin-bottom: var(--spacing-xs);
+}
+
+.alcohol-price-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.alcohol-price-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.alcohol-custom-toggle {
+  margin-top: var(--spacing-sm);
+}
+
+.price-suffix {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-left: var(--spacing-xs);
+}
+
+.alcohol-price-section {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding-top: var(--spacing-xs);
+  border-top: 1px solid var(--medium-gray);
+}
+
+.alcohol-total {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background: var(--duke-blue);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Mobile Responsiveness for Alcohol */
+@media (max-width: 480px) {
+  .alcohol-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .alcohol-quantity-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .alcohol-price-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+}
+
+/* Meal Section */
+.meal-section {
+  padding: var(--spacing-md);
+  background: var(--light-gray);
+  border-radius: var(--radius-md);
+}
+
+.meal-header {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  font-weight: 500;
+}
+
+.meal-item-control {
+  background: var(--white);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  transition: all 0.3s ease;
+}
+
+.meal-item-control:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.meal-frequency-section {
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--medium-gray);
+}
+
+.meal-frequency-header,
+.meal-price-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.meal-label {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.meal-frequency-value,
+.meal-price-value {
+  color: var(--duke-blue);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.meal-price-section {
+  margin-bottom: var(--spacing-md);
+}
+
+.meal-slider {
+  margin-bottom: var(--spacing-sm);
+}
+
+.meal-custom-price-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--medium-gray);
+}
+
+.meal-total {
+  padding: var(--spacing-sm);
+  background: var(--duke-blue);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Mobile Responsiveness for Meals */
+@media (max-width: 480px) {
+  .meal-frequency-header,
+  .meal-price-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .meal-custom-price-toggle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+}
+
+/* Frequency Item Control (used by Extras and Delivery) */
+.frequency-item-control {
+  background: var(--white);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--spacing-sm);
+  transition: all 0.3s ease;
+}
+
+.frequency-item-control:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.frequency-item-control:last-of-type {
+  margin-bottom: 0;
+}
+
+.frequency-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xs);
+}
+
+.frequency-item-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.frequency-item-subtotal {
+  color: var(--duke-blue);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.frequency-item-question {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.4;
+}
+
+.frequency-slider-section {
+  margin-bottom: var(--spacing-sm);
+}
+
+.frequency-slider {
+  margin-bottom: var(--spacing-xs);
+}
+
+.frequency-price-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--medium-gray);
+}
+
+.frequency-price-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.frequency-price-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.frequency-price-value {
+  font-weight: 600;
+  color: var(--duke-blue);
+}
+
+.frequency-custom-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* Extras Section */
+.extras-section {
+  padding: var(--spacing-md);
+  background: var(--light-gray);
+  border-radius: var(--radius-md);
+}
+
+.extras-total {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background: var(--duke-blue);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Delivery Section */
+.delivery-section {
+  padding: var(--spacing-md);
+  background: var(--light-gray);
+  border-radius: var(--radius-md);
+}
+
+.delivery-total {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background: var(--duke-blue);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Mobile Responsiveness for Frequency Items */
+@media (max-width: 480px) {
+  .frequency-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .frequency-price-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .frequency-custom-toggle {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .frequency-custom-toggle .price-input {
+    width: 100%;
+  }
+}
