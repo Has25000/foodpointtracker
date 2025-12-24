@@ -1,76 +1,120 @@
-import { Answers, ScoreResult, MealPlan, MealPlans } from '../types';
+import { ScoreResult, MealPlan, MealPlans, DrinksState, DrinksBreakdown, DrinkItem, AlcoholState, MealsState, MealState, MealConfig, ExtrasState, DeliveryState, FrequencyItem, FrequencyItemConfig } from '../types';
+import { mealConfigs, extrasConfigs, deliveryConfigs, drinkFrequencyOptions, alcoholFrequencyOptions } from '../data/questions';
+
+// Calculate individual drink item score using frequency options
+const getDrinkItemScore = (item: DrinkItem): number => {
+  const price = item.useCustomPrice ? item.customPrice : item.defaultPrice;
+  const frequency = drinkFrequencyOptions[item.frequencyIndex]?.timesPerWeek || 0;
+  return frequency * price;
+};
+
+// Calculate drinks breakdown
+export const getDrinksBreakdown = (drinksState: DrinksState): DrinksBreakdown => {
+  const coffee = getDrinkItemScore(drinksState.coffee);
+  const proteinShakes = getDrinkItemScore(drinksState.proteinShakes);
+  const smoothies = getDrinkItemScore(drinksState.smoothies);
+  const other = getDrinkItemScore(drinksState.other);
+
+  return {
+    coffee,
+    proteinShakes,
+    smoothies,
+    other,
+    total: coffee + proteinShakes + smoothies + other
+  };
+};
+
+// Calculate total drinks score
+export const calculateDrinksScore = (drinksState: DrinksState): number => {
+  return getDrinksBreakdown(drinksState).total;
+};
+
+// Calculate alcohol score using frequency options with direct weekly values
+export const calculateAlcoholScore = (alcoholState: AlcoholState): number => {
+  if (alcoholState.useCustomPrice) {
+    return alcoholState.customPrice;
+  }
+  return alcoholFrequencyOptions[alcoholState.frequencyIndex]?.weeklyValue || 0;
+};
+
+// Calculate individual meal score
+export const calculateMealScore = (mealState: MealState, mealConfig: MealConfig): { score: number; price: number } => {
+  const frequency = mealConfig.frequencyOptions[mealState.frequencyIndex]?.score || 0;
+  const price = mealState.useCustomPrice
+    ? mealState.customPrice
+    : mealConfig.sizeOptions[mealState.sizeIndex]?.price || 0;
+  return {
+    score: frequency * price,
+    price
+  };
+};
+
+// Calculate frequency item score (for Extras and Delivery)
+export const calculateFrequencyItemScore = (item: FrequencyItem, config: FrequencyItemConfig): number => {
+  const frequency = config.frequencyOptions[item.frequencyIndex]?.timesPerWeek || 0;
+  const price = item.useCustomPrice ? item.customPrice : item.defaultPrice;
+  return frequency * price;
+};
 
 // Scoring calculation logic for Duke Meal Plan Calculator
-export const calculateScore = (answers: Answers): ScoreResult => {
+export const calculateScore = (
+  drinksState?: DrinksState,
+  alcoholState?: AlcoholState,
+  mealsState?: MealsState,
+  extrasState?: ExtrasState,
+  deliveryState?: DeliveryState
+): ScoreResult => {
   let totalScore = 0;
   const breakdown: ScoreResult['breakdown'] = {};
 
-  // Coffee score (direct score)
-  if (answers.coffee !== undefined) {
-    breakdown.coffee = answers.coffee.score || 0;
-    totalScore += breakdown.coffee;
+  // Drinks score (from drinks section)
+  if (drinksState) {
+    breakdown.drinks = getDrinksBreakdown(drinksState);
+    totalScore += breakdown.drinks.total;
   }
 
-  // Breakfast score (frequency * price)
-  if (answers.breakfast_frequency !== undefined && answers.breakfast_size !== undefined) {
-    const frequency = answers.breakfast_frequency.score || 0;
-    const price = answers.breakfast_size.price || 0;
-    breakdown.breakfast = frequency * price;
-    breakdown.breakfastItemPrice = price;
+  // Meal scores (from meal sections)
+  if (mealsState) {
+    const breakfastResult = calculateMealScore(mealsState.breakfast, mealConfigs.breakfast);
+    breakdown.breakfast = breakfastResult.score;
+    breakdown.breakfastItemPrice = breakfastResult.price;
     totalScore += breakdown.breakfast;
-  }
 
-  // Lunch score (frequency * price)
-  if (answers.lunch_frequency !== undefined && answers.lunch_size !== undefined) {
-    const frequency = answers.lunch_frequency.score || 0;
-    const price = answers.lunch_size.price || 0;
-    breakdown.lunch = frequency * price;
-    breakdown.lunchItemPrice = price;
+    const lunchResult = calculateMealScore(mealsState.lunch, mealConfigs.lunch);
+    breakdown.lunch = lunchResult.score;
+    breakdown.lunchItemPrice = lunchResult.price;
     totalScore += breakdown.lunch;
-  }
 
-  // Dinner score (frequency * price)
-  if (answers.dinner_frequency !== undefined && answers.dinner_size !== undefined) {
-    const frequency = answers.dinner_frequency.score || 0;
-    const price = answers.dinner_size.price || 0;
-    breakdown.dinner = frequency * price;
-    breakdown.dinnerItemPrice = price;
+    const dinnerResult = calculateMealScore(mealsState.dinner, mealConfigs.dinner);
+    breakdown.dinner = dinnerResult.score;
+    breakdown.dinnerItemPrice = dinnerResult.price;
     totalScore += breakdown.dinner;
   }
 
-  // Sweet treats score (direct score)
-  if (answers.sweet_treats !== undefined) {
-    breakdown.sweetTreats = answers.sweet_treats.score || 0;
+  // Extras scores (from extras section)
+  if (extrasState) {
+    breakdown.sweetTreats = calculateFrequencyItemScore(extrasState.sweetTreats, extrasConfigs.sweetTreats);
     totalScore += breakdown.sweetTreats;
-  }
 
-  // Snacks score (direct score)
-  if (answers.snacks !== undefined) {
-    breakdown.snacks = answers.snacks.score || 0;
+    breakdown.snacks = calculateFrequencyItemScore(extrasState.snacks, extrasConfigs.snacks);
     totalScore += breakdown.snacks;
-  }
 
-  // Late night score (direct score)
-  if (answers.late_night !== undefined) {
-    breakdown.lateNight = answers.late_night.score || 0;
+    breakdown.lateNight = calculateFrequencyItemScore(extrasState.lateNight, extrasConfigs.lateNight);
     totalScore += breakdown.lateNight;
   }
 
-  // MOP score (direct score)
-  if (answers.mop !== undefined) {
-    breakdown.mop = answers.mop.score || 0;
-    totalScore += breakdown.mop;
-  }
-
-  // Alcohol score (direct score)
-  if (answers.alcohol !== undefined) {
-    breakdown.alcohol = answers.alcohol.score || 0;
+  // Alcohol score (from alcohol section - monthly converted to weekly)
+  if (alcoholState) {
+    breakdown.alcohol = calculateAlcoholScore(alcoholState);
     totalScore += breakdown.alcohol;
   }
 
-  // Duke Store score (direct score)
-  if (answers.duke_store !== undefined) {
-    breakdown.dukeStore = answers.duke_store.score || 0;
+  // Delivery scores (from delivery section)
+  if (deliveryState) {
+    breakdown.mop = calculateFrequencyItemScore(deliveryState.mop, deliveryConfigs.mop);
+    totalScore += breakdown.mop;
+
+    breakdown.dukeStore = calculateFrequencyItemScore(deliveryState.dukeStore, deliveryConfigs.dukeStore);
     totalScore += breakdown.dukeStore;
   }
 
@@ -81,12 +125,17 @@ export const calculateScore = (answers: Answers): ScoreResult => {
 };
 
 export const getMealPlan = (score: number, mealPlans: MealPlans): MealPlan => {
-  if (score < mealPlans.planB.range[0]) {
+  // A: <222, B: <245, C: <263, D: <287, E: >=287
+  if (score < 222) {
     return mealPlans.planA;
-  } else if (score < mealPlans.planC.range[0]) {
+  } else if (score < 245) {
     return mealPlans.planB;
-  } else {
+  } else if (score < 263) {
     return mealPlans.planC;
+  } else if (score < 287) {
+    return mealPlans.planD;
+  } else {
+    return mealPlans.planE;
   }
 };
 

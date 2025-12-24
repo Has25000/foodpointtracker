@@ -1,51 +1,24 @@
-import { useState, useEffect } from 'react';
-import { QuestionSlider } from './components/QuestionSlider';
+import { useState } from 'react';
+import { DrinksSection } from './components/DrinksSection';
+import { AlcoholSection } from './components/AlcoholSection';
+import { MealSection } from './components/MealSection';
+import { ExtrasSection } from './components/ExtrasSection';
+import { DeliverySection } from './components/DeliverySection';
 import { Results } from './components/Results';
-import { questions, mealPlans } from './data/questions';
+import { mealPlans, drinkDefaults, alcoholDefaults, mealConfigs, mealsDefaults, extrasDefaults, deliveryDefaults } from './data/questions';
 import { calculateScore, getMealPlan } from './utils/scoring';
-import { Answers, QuestionOption } from './types';
+import { DrinksState, AlcoholState, MealsState, ExtrasState, DeliveryState } from './types';
 import './App.css';
 
 function App() {
-  const [answers, setAnswers] = useState<Answers>({});
-  const [sliderValues, setSliderValues] = useState<{ [key: string]: number }>({});
+  const [drinksState, setDrinksState] = useState<DrinksState>(drinkDefaults);
+  const [alcoholState, setAlcoholState] = useState<AlcoholState>(alcoholDefaults);
+  const [mealsState, setMealsState] = useState<MealsState>(mealsDefaults);
+  const [extrasState, setExtrasState] = useState<ExtrasState>(extrasDefaults);
+  const [deliveryState, setDeliveryState] = useState<DeliveryState>(deliveryDefaults);
 
-  // Initialize slider values to 0
-  useEffect(() => {
-    const initialValues: { [key: string]: number } = {};
-    const initialAnswers: Answers = {};
-
-    questions.forEach((question) => {
-      initialValues[question.id] = 0;
-      initialAnswers[question.id] = question.options[0];
-    });
-
-    setSliderValues(initialValues);
-    setAnswers(initialAnswers);
-  }, []);
-
-  const handleAnswerChange = (questionId: string, option: QuestionOption) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: option,
-    }));
-    setSliderValues((prev) => ({
-      ...prev,
-      [questionId]: option.value,
-    }));
-  };
-
-  const score = calculateScore(answers);
+  const score = calculateScore(drinksState, alcoholState, mealsState, extrasState, deliveryState);
   const plan = getMealPlan(score.total, mealPlans);
-
-  // Group questions by category
-  const categorizedQuestions = questions.reduce((acc, question) => {
-    if (!acc[question.category]) {
-      acc[question.category] = [];
-    }
-    acc[question.category].push(question);
-    return acc;
-  }, {} as { [key: string]: typeof questions });
 
   return (
     <div className="app">
@@ -62,21 +35,85 @@ function App() {
             Your recommended meal plan will update automatically as you adjust your answers.
           </p>
 
-          {Object.entries(categorizedQuestions).map(([category, categoryQuestions]) => (
-            <div key={category} className="category-section">
-              <h3 className="category-title">{category}</h3>
-              <div className="questions-group">
-                {categoryQuestions.map((question) => (
-                  <QuestionSlider
-                    key={question.id}
-                    question={question}
-                    value={sliderValues[question.id] || 0}
-                    onChange={(option) => handleAnswerChange(question.id, option)}
-                  />
-                ))}
-              </div>
+          {/* Breakfast Section */}
+          <div className="category-section">
+            <h3 className="category-title">Breakfast</h3>
+            <div className="questions-group">
+              <MealSection
+                mealState={mealsState.breakfast}
+                mealConfig={mealConfigs.breakfast}
+                onMealChange={(newState) => setMealsState(prev => ({ ...prev, breakfast: newState }))}
+              />
             </div>
-          ))}
+          </div>
+
+          {/* Lunch Section */}
+          <div className="category-section">
+            <h3 className="category-title">Lunch</h3>
+            <div className="questions-group">
+              <MealSection
+                mealState={mealsState.lunch}
+                mealConfig={mealConfigs.lunch}
+                onMealChange={(newState) => setMealsState(prev => ({ ...prev, lunch: newState }))}
+              />
+            </div>
+          </div>
+
+          {/* Dinner Section */}
+          <div className="category-section">
+            <h3 className="category-title">Dinner</h3>
+            <div className="questions-group">
+              <MealSection
+                mealState={mealsState.dinner}
+                mealConfig={mealConfigs.dinner}
+                onMealChange={(newState) => setMealsState(prev => ({ ...prev, dinner: newState }))}
+              />
+            </div>
+          </div>
+
+          {/* Coffee & Drinks Section */}
+          <div className="category-section">
+            <h3 className="category-title">Coffee & Drinks</h3>
+            <div className="questions-group">
+              <DrinksSection
+                drinksState={drinksState}
+                onDrinksChange={setDrinksState}
+              />
+            </div>
+          </div>
+
+          {/* Extras Section */}
+          <div className="category-section">
+            <h3 className="category-title">Extras</h3>
+            <div className="questions-group">
+              <ExtrasSection
+                extrasState={extrasState}
+                onExtrasChange={setExtrasState}
+              />
+            </div>
+          </div>
+
+          {/* Delivery & Other Section */}
+          <div className="category-section">
+            <h3 className="category-title">Delivery & Other</h3>
+            <div className="questions-group">
+              <DeliverySection
+                deliveryState={deliveryState}
+                onDeliveryChange={setDeliveryState}
+              />
+            </div>
+          </div>
+
+          {/* Alcoholic Drinks Section */}
+          <div className="category-section">
+            <h3 className="category-title">Alcoholic Drinks</h3>
+            <div className="questions-group">
+              <AlcoholSection
+                alcoholState={alcoholState}
+                onAlcoholChange={setAlcoholState}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="results-container">
@@ -86,6 +123,9 @@ function App() {
 
       <footer className="app-footer">
         <p>Made for Duke Students | Scores are estimates based on typical pricing</p>
+        <p className="bluebot-link">
+          Need help finding meal options? Try <a href="https://oit.duke.edu/bluebot-pilot/" target="_blank" rel="noopener noreferrer">Duke BlueBot AI</a>
+        </p>
       </footer>
     </div>
   );
